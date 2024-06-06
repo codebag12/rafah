@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { OpenAI } from 'openai';
+// import { OpenAIApi } from 'openai';
+import OpenAI from "openai";
 
 // Setup OpenAI configuration
 const openai = new OpenAI({
@@ -23,13 +24,25 @@ export async function POST(req: Request) {
 
     messages.push({ role: 'user', content: prompt });
     sessionConversations[sessionId] = messages;
+    
 
     const gptResponse = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
-      messages: messages,
+      messages,
+
+      model: "gpt-3.5-turbo",
     });
 
-    const botMessage = gptResponse.data.choices[0].message.content;
+
+    // const gptResponse = await openai.createChatCompletion({
+    //   model: 'gpt-3.5-turbo',
+    //   messages: messages,
+
+    // });
+    console.log(gptResponse.choices[0] ,"gptResponse");
+    
+   
+
+    const botMessage = gptResponse.choices[0].message.content;
     sessionConversations[sessionId].push({
       role: 'assistant',
       content: botMessage,
